@@ -7,7 +7,7 @@ import json
 
 
 # @st.experimental_memo
-CO2_yearly_path = "/Users/anna/code/L-Fandangle042/CO2_Emission_Indicator/data/carbon_dioxide/CO2_simplified_by_name.xlsx"
+CO2_yearly_path = "data/CO2_simplified_by_name.xlsx"
 df = pd.read_excel(CO2_yearly_path)
 
 # @st.experimental_memo
@@ -33,18 +33,13 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 # API implementation
+
 url = 'http://127.0.0.1:8000/predict'
+# url  = "https://co2project-vzzs3rfq7q-ew.a.run.app/predict"
 
 if st.sidebar.button("Predict"):
-    # params = {"country": "Aruba", "max_predicted_year": 2030}
-    # response = requests.post(url, params=params)
-    # st.subheader(response)
-    # st.subheader(response.text)
-    # prediction = response.json()['prediction']
-
-    # question = f'Will {country_selected[0]} reach its environmental goals for CO2?: '
-    # st.subheader(question)
-    # st.subheader(str(prediction))
-
-
-    st.text(f"{country_selected} will not achieve it's climate goals for 2030")
+    params = {"country": country_selected}
+    response = requests.get(url, params=params)
+    st.subheader(response)
+    question = f'Will {country_selected} reach its environmental goals for CO2?: '
+    st.subheader(question + response.text)
