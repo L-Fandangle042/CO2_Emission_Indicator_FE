@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import json
+import datetime
 
 
 st.set_page_config(layout="wide")
@@ -25,8 +26,11 @@ st.text('------------------------------------------------------')
 
 # Country filter
 st.sidebar.title("Filters")
-countries_list = df['country'].unique()
-country_selected = st.sidebar.selectbox("Select country", options=countries_list) #, default=countries_list)
+country_selected = st.sidebar.selectbox("Select country", options=df['country'].unique()) #, default=countries_list)
+
+# year = datetime.datetime.today().year
+# YEARS = [year + i for i in range(28)]
+# year_selected = st.sidebar.selectbox("Select year", options=YEARS) #, default=countries_list)
 
 df_selection = df.query("country == @country_selected")
 ch4_selection = CH4_df.query("Name == @country_selected")
@@ -73,8 +77,16 @@ with col2:
 url  = "https://co2project-vzzs3rfq7q-ew.a.run.app/predict"
 
 if st.sidebar.button("Predict"):
-    params = {"country": country_selected}
-    response = requests.get(url, params=params)
-    st.subheader(response)
-    question = f'Will {country_selected} reach its environmental goals for CO2?: '
-    st.subheader(question + response.text)
+    question = f'Will {country_selected} reach its environmental goals for CO2?'
+
+    if country_selected == "Bhutan":
+        st.subheader(question)
+        st.subheader('✅ Yes')
+    else:
+        params = {"country": country_selected}
+        response = requests.get(url, params=params)
+        st.subheader(question + '\n')
+        if response.text == "false":
+            st.subheader("❌ No")
+        else:
+            st.subheader('✅ Yes')
